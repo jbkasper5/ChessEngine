@@ -42,6 +42,7 @@ int64_t* getBitboards(short pieces, char* board){
             }else{ // piece is black
 
             }
+            substr++;
         }
     }
     return boards;

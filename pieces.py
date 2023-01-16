@@ -2,7 +2,7 @@ import pygame
 
 class King:
     def __init__(self, color, square, set = 1):
-        self.image = pygame.image.load(f"/Users/jakekasper/Python/Chess/Assets/{color}/Set{set}/King.png")
+        self.image = pygame.image.load(f"/Users/jakekasper/Python/ChessEngine/Assets/{color}/Set{set}/King.png")
         self.color = color
         self.square = square
         self.value = 0
@@ -17,7 +17,7 @@ class King:
         
 class Queen:
     def __init__(self, color, square, set = 1):
-        self.image = pygame.image.load(f"/Users/jakekasper/Python/Chess/Assets/{color}/Set{set}/Queen.png")
+        self.image = pygame.image.load(f"/Users/jakekasper/Python/ChessEngine/Assets/{color}/Set{set}/Queen.png")
         self.color = color
         self.square = square
         self.value = 9
@@ -29,7 +29,7 @@ class Queen:
            
 class Bishop:
     def __init__(self, color, square, set = 1):
-        self.image = pygame.image.load(f"/Users/jakekasper/Python/Chess/Assets/{color}/Set{set}/Bishop.png")
+        self.image = pygame.image.load(f"/Users/jakekasper/Python/ChessEngine/Assets/{color}/Set{set}/Bishop.png")
         self.color = color
         self.square = square
         self.value = 3
@@ -41,7 +41,7 @@ class Bishop:
 
 class Knight:
     def __init__(self, color, square, set = 1):
-        self.image = pygame.image.load(f"/Users/jakekasper/Python/Chess/Assets/{color}/Set{set}/Knight.png")
+        self.image = pygame.image.load(f"/Users/jakekasper/Python/ChessEngine/Assets/{color}/Set{set}/Knight.png")
         self.color = color
         self.square = square
         self.value = 3
@@ -53,7 +53,7 @@ class Knight:
         
 class Rook:
     def __init__(self, color, square, set = 1, moved = False):
-        self.image = pygame.image.load(f"/Users/jakekasper/Python/Chess/Assets/{color}/Set{set}/Rook.png")
+        self.image = pygame.image.load(f"/Users/jakekasper/Python/ChessEngine/Assets/{color}/Set{set}/Rook.png")
         self.color = color
         self.square = square
         self.value = 5
@@ -65,7 +65,7 @@ class Rook:
         
 class Pawn:
     def __init__(self, color, square, set = 1, moved = False, enpassant = False):
-        self.image = pygame.image.load(f"/Users/jakekasper/Python/Chess/Assets/{color}/Set{set}/Pawn.png")
+        self.image = pygame.image.load(f"/Users/jakekasper/Python/ChessEngine/Assets/{color}/Set{set}/Pawn.png")
         self.color = color
         self.square = square
         self.value = 1
