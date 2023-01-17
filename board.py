@@ -3,19 +3,19 @@ import pieces
 import json
 
 class Board:
-    def __init__(self, screen):
+    def __init__(self, screen, playerColor):
         self.screen = screen
         dim = 100
         files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
         ranks = ['1', '2', '3', '4', '5', '6', '7', '8']
-        player = "Black"
-        if player == "White":
+        if playerColor == 'w':
             self.board = [[Square(color = (110 - (50 * ((i + j) % 2)), 170 - (50 * ((i + j) % 2)), 255 - ((50 * ((i + j) % 2)))), coords = (i * dim, j * dim, dim, dim), file = files[i], rank = ranks[len(ranks) - 1 - j]) for i in range(8)] for j in range(8)]
         else:
             self.board = [[Square(color = (110 - (50 * ((i + j) % 2)), 170 - (50 * ((i + j) % 2)), 255 - ((50 * ((i + j) % 2)))), coords = (i * dim, j * dim, dim, dim), file = files[len(files) - 1 - i], rank = ranks[j]) for i in range(8)] for j in range(8)]
         
         SET = 1
         
+        # initial board configuration
         self.pieces = [
             pieces.Pawn(color = "White", set = SET, square = ('a', '2')),
             pieces.Pawn(color = "White", set = SET, square = ('b', '2')),
@@ -70,10 +70,14 @@ class Board:
 
     def as_str(self):
         string = ""
-        for piece in self.pieces:
-            if not piece.captured:
-                string += f"{piece.as_str()}_"
-        return string
+        for row in self.board:
+            for square in row:
+                if square.piece == None:
+                    string += "0_"
+                else:
+                    string += f"{square.piece.as_str()}_"
+        print(string)
+        return string[:-1]
 
 class Square:
     def __init__(self, color, coords, file = None, rank = None):

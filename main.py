@@ -13,7 +13,7 @@ running = True
 piece_selected = None
 old_piece = None
 
-env = Environment(screen = screen)
+env = Environment(screen = screen, playerColor = 'w', humanPlayer = True)
 env.initialize_environment()
 event = Action(env = env)
 

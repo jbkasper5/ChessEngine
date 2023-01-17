@@ -3,10 +3,10 @@ import board
 from engine import Engine
 
 class Environment:
-    def __init__(self, screen):
+    def __init__(self, screen, playerColor = 'w', humanPlayer = True):
         self.screen = screen
         self.engine = Engine()
-        self.board = board.Board(screen = self.screen)
+        self.board = board.Board(screen = self.screen, playerColor = playerColor)
     
     def initialize_environment(self):
         self.board.draw_board()
