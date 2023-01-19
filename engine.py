@@ -1,27 +1,27 @@
 import subprocess
-import json
+import time
 import env
 import board
 
 class Engine:
     def __init__(self):
-        proc = subprocess.Popen(['sh', './Backend/compile.sh', 'hello', 'world'], stdout=subprocess.PIPE)
-        out, err = proc.communicate()
-        out = str(out)[2:-3]
-        print("Back to python")
-        print(out)
+        compileProc = subprocess.Popen(['sh', './Backend/compile.sh', 'hello', 'world'], stdout=subprocess.PIPE)
+        out, err = compileProc.communicate()
 
     def find_moves(self, square, board):
-        print(board.as_str())
         # args: 
         #   flag | number of pieces on the board | piece selected | board configuration
+        start = time.time()
         proc = subprocess.Popen(['sh', './Backend/compute.sh', 'f', str(len(board.pieces)), square.piece.as_str(), board.as_str()], stdout = subprocess.PIPE)
         out, err = proc.communicate()
+        print(f"Found move in {time.time() - start} seconds.")
         out = str(out)[2:-3]
-        print("Back to python")
-        print(out)
 
-    def make_move(self, color):
+    def make_move(self, color, board):
         # args:
         #   flag | number of pieces on the board | color | board configuration
-        subprocess.call(['sh', './Backend/compute.sh', str(len(board.pieces)), 'm', str(color), board.as_str()], stdout = subprocess.PIPE)
+        start = time.time()
+        proc = subprocess.Popen(['sh', './Backend/compute.sh', str(len(board.pieces)), 'm', str(color), board.as_str()], stdout = subprocess.PIPE)
+        out, err = proc.communicate()
+        print(f"Move made in {time.time() - start} seconds.")
+        out = str(out)[2:-3]

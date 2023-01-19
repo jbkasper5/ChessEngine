@@ -7,6 +7,7 @@ class Environment:
         self.screen = screen
         self.engine = Engine()
         self.board = board.Board(screen = self.screen, playerColor = playerColor)
+        self.playerColor = playerColor
     
     def initialize_environment(self):
         self.board.draw_board()

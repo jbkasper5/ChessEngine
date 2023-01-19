@@ -2,7 +2,10 @@ import pygame
 
 class King:
     def __init__(self, color, square, set = 1):
-        self.image = pygame.image.load(f"/Users/jakekasper/Python/ChessEngine/Assets/{color}/Set{set}/King.png")
+        if color == 'w':
+            self.image = pygame.image.load(f"/Users/jakekasper/Python/ChessEngine/Assets/White/Set{set}/King.png")
+        else:
+            self.image = pygame.image.load(f"/Users/jakekasper/Python/ChessEngine/Assets/Black/Set{set}/King.png")
         self.color = color
         self.square = square
         self.value = 0
@@ -13,11 +16,14 @@ class King:
         self.captured = True
 
     def as_str(self):
-        return f"{self.color.lower()[0]}k{self.square[0]}{self.square[1]}"
+        return f"{self.color}k{self.square[0]}{self.square[1]}"
         
 class Queen:
     def __init__(self, color, square, set = 1):
-        self.image = pygame.image.load(f"/Users/jakekasper/Python/ChessEngine/Assets/{color}/Set{set}/Queen.png")
+        if color == 'w':
+            self.image = pygame.image.load(f"/Users/jakekasper/Python/ChessEngine/Assets/White/Set{set}/Queen.png")
+        else:
+            self.image = pygame.image.load(f"/Users/jakekasper/Python/ChessEngine/Assets/Black/Set{set}/Queen.png")
         self.color = color
         self.square = square
         self.value = 9
@@ -25,11 +31,14 @@ class Queen:
         self.captured = False
 
     def as_str(self):
-        return f"{self.color.lower()[0]}q{self.square[0]}{self.square[1]}"
+        return f"{self.color}q{self.square[0]}{self.square[1]}"
            
 class Bishop:
     def __init__(self, color, square, set = 1):
-        self.image = pygame.image.load(f"/Users/jakekasper/Python/ChessEngine/Assets/{color}/Set{set}/Bishop.png")
+        if color == 'w':
+            self.image = pygame.image.load(f"/Users/jakekasper/Python/ChessEngine/Assets/White/Set{set}/Bishop.png")
+        else:
+            self.image = pygame.image.load(f"/Users/jakekasper/Python/ChessEngine/Assets/Black/Set{set}/Bishop.png")
         self.color = color
         self.square = square
         self.value = 3
@@ -37,11 +46,14 @@ class Bishop:
         self.captured = False
 
     def as_str(self):
-        return f"{self.color.lower()[0]}b{self.square[0]}{self.square[1]}"
+        return f"{self.color}b{self.square[0]}{self.square[1]}"
 
 class Knight:
     def __init__(self, color, square, set = 1):
-        self.image = pygame.image.load(f"/Users/jakekasper/Python/ChessEngine/Assets/{color}/Set{set}/Knight.png")
+        if color == 'w':
+            self.image = pygame.image.load(f"/Users/jakekasper/Python/ChessEngine/Assets/White/Set{set}/Knight.png")
+        else:
+            self.image = pygame.image.load(f"/Users/jakekasper/Python/ChessEngine/Assets/Black/Set{set}/Knight.png")
         self.color = color
         self.square = square
         self.value = 3
@@ -49,11 +61,14 @@ class Knight:
         self.captured = False
 
     def as_str(self):
-        return f"{self.color.lower()[0]}n{self.square[0]}{self.square[1]}"
+        return f"{self.color}n{self.square[0]}{self.square[1]}"
         
 class Rook:
     def __init__(self, color, square, set = 1, moved = False):
-        self.image = pygame.image.load(f"/Users/jakekasper/Python/ChessEngine/Assets/{color}/Set{set}/Rook.png")
+        if color == 'w':
+            self.image = pygame.image.load(f"/Users/jakekasper/Python/ChessEngine/Assets/White/Set{set}/Rook.png")
+        else:
+            self.image = pygame.image.load(f"/Users/jakekasper/Python/ChessEngine/Assets/Black/Set{set}/Rook.png")
         self.color = color
         self.square = square
         self.value = 5
@@ -61,11 +76,14 @@ class Rook:
         self.captured = False
 
     def as_str(self):
-        return f"{self.color.lower()[0]}r{self.square[0]}{self.square[1]}"
+        return f"{self.color}r{self.square[0]}{self.square[1]}"
         
 class Pawn:
     def __init__(self, color, square, set = 1, moved = False, enpassant = False):
-        self.image = pygame.image.load(f"/Users/jakekasper/Python/ChessEngine/Assets/{color}/Set{set}/Pawn.png")
+        if color == 'w':
+            self.image = pygame.image.load(f"/Users/jakekasper/Python/ChessEngine/Assets/White/Set{set}/Pawn.png")
+        else:
+            self.image = pygame.image.load(f"/Users/jakekasper/Python/ChessEngine/Assets/Black/Set{set}/Pawn.png")
         self.color = color
         self.square = square
         self.value = 1
@@ -73,4 +91,4 @@ class Pawn:
         self.captured = False
 
     def as_str(self):
-        return f"{self.color.lower()[0]}p{self.square[0]}{self.square[1]}"
+        return f"{self.color}p{self.square[0]}{self.square[1]}"

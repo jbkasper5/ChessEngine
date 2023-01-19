@@ -17,38 +17,38 @@ class Board:
         
         # initial board configuration
         self.pieces = [
-            pieces.Pawn(color = "White", set = SET, square = ('a', '2')),
-            pieces.Pawn(color = "White", set = SET, square = ('b', '2')),
-            pieces.Pawn(color = "White", set = SET, square = ('c', '2')),
-            pieces.Pawn(color = "White", set = SET, square = ('d', '2')),
-            pieces.Pawn(color = "White", set = SET, square = ('e', '2')),
-            pieces.Pawn(color = "White", set = SET, square = ('f', '2')),
-            pieces.Pawn(color = "White", set = SET, square = ('g', '2')),
-            pieces.Pawn(color = "White", set = SET, square = ('h', '2')),
-            pieces.Rook(color = "White", set = SET, square = ('a', '1')),
-            pieces.Rook(color = "White", set = SET, square = ('h', '1')),
-            pieces.Knight(color = "White", set = SET, square = ('b', '1')),
-            pieces.Knight(color = "White", set = SET, square = ('g', '1')),
-            pieces.Bishop(color = "White", set = SET, square = ('c', '1')),
-            pieces.Bishop(color = "White", set = SET, square = ('f', '1')),
-            pieces.King(color = "White", set = SET, square = ('e', '1')),
-            pieces.Queen(color = "White", set = SET, square = ('d', '1')),
-            pieces.Pawn(color = "Black", set = SET, square = ('a', '7')),
-            pieces.Pawn(color = "Black", set = SET, square = ('b', '7')),
-            pieces.Pawn(color = "Black", set = SET, square = ('c', '7')),
-            pieces.Pawn(color = "Black", set = SET, square = ('d', '7')),
-            pieces.Pawn(color = "Black", set = SET, square = ('e', '7')),
-            pieces.Pawn(color = "Black", set = SET, square = ('f', '7')),
-            pieces.Pawn(color = "Black", set = SET, square = ('g', '7')),
-            pieces.Pawn(color = "Black", set = SET, square = ('h', '7')),
-            pieces.Rook(color = "Black", set = SET, square = ('a', '8')),
-            pieces.Rook(color = "Black", set = SET, square = ('h', '8')),
-            pieces.Knight(color = "Black", set = SET, square = ('b', '8')),
-            pieces.Knight(color = "Black", set = SET, square = ('g', '8')),
-            pieces.Bishop(color = "Black", set = SET, square = ('c', '8')),
-            pieces.Bishop(color = "Black", set = SET, square = ('f', '8')),
-            pieces.King(color = "Black", set = SET, square = ('e', '8')),
-            pieces.Queen(color = "Black", set = SET, square = ('d', '8'))
+            pieces.Pawn(color = "w", set = SET, square = ('a', '2')),
+            pieces.Pawn(color = "w", set = SET, square = ('b', '2')),
+            pieces.Pawn(color = "w", set = SET, square = ('c', '2')),
+            pieces.Pawn(color = "w", set = SET, square = ('d', '2')),
+            pieces.Pawn(color = "w", set = SET, square = ('e', '2')),
+            pieces.Pawn(color = "w", set = SET, square = ('f', '2')),
+            pieces.Pawn(color = "w", set = SET, square = ('g', '2')),
+            pieces.Pawn(color = "w", set = SET, square = ('h', '2')),
+            pieces.Rook(color = "w", set = SET, square = ('a', '1')),
+            pieces.Rook(color = "w", set = SET, square = ('h', '1')),
+            pieces.Knight(color = "w", set = SET, square = ('b', '1')),
+            pieces.Knight(color = "w", set = SET, square = ('g', '1')),
+            pieces.Bishop(color = "w", set = SET, square = ('c', '1')),
+            pieces.Bishop(color = "w", set = SET, square = ('f', '1')),
+            pieces.King(color = "w", set = SET, square = ('e', '1')),
+            pieces.Queen(color = "w", set = SET, square = ('d', '1')),
+            pieces.Pawn(color = "b", set = SET, square = ('a', '7')),
+            pieces.Pawn(color = "b", set = SET, square = ('b', '7')),
+            pieces.Pawn(color = "b", set = SET, square = ('c', '7')),
+            pieces.Pawn(color = "b", set = SET, square = ('d', '7')),
+            pieces.Pawn(color = "b", set = SET, square = ('e', '7')),
+            pieces.Pawn(color = "b", set = SET, square = ('f', '7')),
+            pieces.Pawn(color = "b", set = SET, square = ('g', '7')),
+            pieces.Pawn(color = "b", set = SET, square = ('h', '7')),
+            pieces.Rook(color = "b", set = SET, square = ('a', '8')),
+            pieces.Rook(color = "b", set = SET, square = ('h', '8')),
+            pieces.Knight(color = "b", set = SET, square = ('b', '8')),
+            pieces.Knight(color = "b", set = SET, square = ('g', '8')),
+            pieces.Bishop(color = "b", set = SET, square = ('c', '8')),
+            pieces.Bishop(color = "b", set = SET, square = ('f', '8')),
+            pieces.King(color = "b", set = SET, square = ('e', '8')),
+            pieces.Queen(color = "b", set = SET, square = ('d', '8'))
         ]
         
         self.assign_pieces()
@@ -70,13 +70,13 @@ class Board:
 
     def as_str(self):
         string = ""
-        for row in self.board:
-            for square in row:
-                if square.piece == None:
+        for row in range(8):
+            for square in range(8):
+                if self.board[row][square].piece == None:
                     string += "0_"
                 else:
-                    string += f"{square.piece.as_str()}_"
-        print(string)
+                    string += f"{self.board[row][square].piece.as_str()}_"
+        # print(string)
         return string[:-1]
 
 class Square:

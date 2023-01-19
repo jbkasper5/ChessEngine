@@ -6,10 +6,12 @@ int main(int argc, char** argv){
     if(**(argv + 1) == 102){
         char* piece = argv[3];
         char* board = argv[4];
+        printf("Finding moves...\n");
         findValidMoves(num_pieces, piece, board);
     }else if(**(argv + 1) == 109){
         char* player = argv[3];
         char* board = argv[4];
         makeMove(num_pieces, board);
     }
+    return 0;
 }
