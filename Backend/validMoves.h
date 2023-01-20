@@ -5,6 +5,8 @@
 
 void findValidMoves(short pieces, char* piece, char* board);
 
+void movesToPython(char* piece, int64_t moves);
+
 int64_t computeBishopMoves(char* piece, int64_t* boards);
 
 int64_t computeRookMoves(char* piece, int64_t* boards);

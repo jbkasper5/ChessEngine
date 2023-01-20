@@ -15,7 +15,8 @@ class Engine:
         proc = subprocess.Popen(['sh', './Backend/compute.sh', 'f', str(len(board.pieces)), square.piece.as_str(), board.as_str()], stdout = subprocess.PIPE)
         out, err = proc.communicate()
         print(f"Found move in {time.time() - start} seconds.")
-        out = str(out)[2:-3]
+        out = str(out)[2:-2]
+        return out
 
     def make_move(self, color, board):
         # args:
@@ -25,3 +26,4 @@ class Engine:
         out, err = proc.communicate()
         print(f"Move made in {time.time() - start} seconds.")
         out = str(out)[2:-3]
+        return out

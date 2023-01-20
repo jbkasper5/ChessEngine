@@ -3,6 +3,12 @@ from env import Environment
 from board import Board
 from action import Action
 
+
+color = input("Choose a color to play (w/b): ")
+while(color.lower() != 'w' and color.lower() != 'b'):
+    print("Invalid input.")
+    color = input("Choose a color to play (w/b): ")
+    
 pygame.init()
 
 BOARD_HEIGHT = 800
@@ -13,7 +19,7 @@ running = True
 piece_selected = None
 old_piece = None
 
-env = Environment(screen = screen, playerColor = 'w', humanPlayer = True)
+env = Environment(screen = screen, playerColor = color, humanPlayer = True)
 env.initialize_environment()
 event = Action(env = env)
 

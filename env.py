@@ -20,6 +20,25 @@ class Environment:
     def deselect_piece(self, square):
         square.color = square.base_color
         square.draw_square(self.screen)
+        self.deselect_moves()
 
     def highlight_moves(self, square):
-        self.engine.find_moves(square = square, board = self.board)
+        self.moves = []
+        self.highlighted_moves = []
+        moves = self.engine.find_moves(square = square, board = self.board).split(",")
+        if moves[0] != '':
+            for move in moves:
+                self.moves.append((move[0], move[1]))
+            for row in self.board.board:
+                for square in row:
+                    if square.identity in self.moves:
+                        self.highlighted_moves.append(square)
+        
+        for square in self.highlighted_moves:
+            square.color = (square.base_color[0] - 50, 175, square.base_color[2] - 100)
+            square.draw_square(self.screen)
+    
+    def deselect_moves(self):
+        for square in self.highlighted_moves:
+            square.color = square.base_color
+            square.draw_square(self.screen)
