@@ -76,7 +76,6 @@ class Board:
                     string += "0_"
                 else:
                     string += f"{self.board[row][square].piece.as_str()}_"
-        # print(string)
         return string[:-1]
 
 class Square:
@@ -86,6 +85,7 @@ class Square:
         self.coords = coords
         self.identity = (file, rank)
         self.piece = None
+        self.highlighted = False
     
     def draw_square(self, screen):
         pygame.draw.rect(screen, self.color, pygame.Rect(self.coords))

@@ -61,7 +61,7 @@ int64_t* getBitboards(char* board){
             }else if(*(currChar + 1) == 'k'){
                 boards[5 + offset]++;
             }
-            currChar = currChar + 4;
+            currChar = currChar + 5;
         }
     }
     return boards;

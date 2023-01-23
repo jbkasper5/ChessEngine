@@ -29,14 +29,23 @@ while running:
             running = False
             
         if game_event.type == pygame.MOUSEBUTTONDOWN:
-            piece_selected = event.piece_selected()
+            square = event.square_selected() # determine if a square was selected
+            if square is not None:
+                env.deselect_piece(piece_selected)
+                env.make_move(piece_selected, square)
+                piece_selected = None
+            else:
+                piece_selected = event.piece_selected()
             if piece_selected is not None and old_piece is None:
-                env.select_piece(piece_selected)
+                env.select_piece(piece_selected) # select the piece and find moves
             elif (piece_selected is not None and old_piece is not None) and piece_selected is not old_piece:
-                env.deselect_piece(old_piece)
-                env.select_piece(piece_selected)
+                env.deselect_piece(old_piece) # unhighlight moves and deselect piece
+                env.select_piece(piece_selected) # highlight new piece and find moves
             elif piece_selected is None and old_piece is not None:
-                env.deselect_piece(old_piece)
-            old_piece = piece_selected
+                env.deselect_piece(old_piece) # unhighlight moves and deselect piece
+            elif piece_selected is not None and piece_selected == old_piece:
+                env.deselect_piece(piece_selected)
+                piece_selected = None
+            old_piece = piece_selected # change the old piece to be the piece selected
                 
     pygame.display.update()
