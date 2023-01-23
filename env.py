@@ -9,19 +9,23 @@ class Environment:
         self.board = board.Board(screen = self.screen, playerColor = playerColor)
         self.playerColor = playerColor
         self.highlighted_moves = []
+        pygame.display.update()
     
     def initialize_environment(self):
         self.board.draw_board()
+        pygame.display.update()
         
     def select_piece(self, square):
         square.color = (square.base_color[0], 255, square.base_color[2])
         square.draw_square(self.screen)
         self.highlight_moves(square)
+        pygame.display.update()
         
     def deselect_piece(self, square):
         square.color = square.base_color
         square.draw_square(self.screen)
         self.deselect_moves()
+        pygame.display.update()
 
     def highlight_moves(self, square):
         self.moves = []
@@ -38,6 +42,7 @@ class Environment:
             square.color = (square.base_color[0] - 50, 175, square.base_color[2] - 100)
             square.draw_square(self.screen)
             square.highlighted = True
+        pygame.display.update()
     
     def deselect_moves(self):
         for square in self.highlighted_moves:

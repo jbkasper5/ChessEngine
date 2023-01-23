@@ -100,23 +100,36 @@ int64_t computePawnMoves(char* piece, int64_t* boards){
     int64_t move = 1;
     if(*(piece + 4) == 48){ // not moved
         move = (int64_t) 1 << (startPos + 8);
-        if((move | playerBoard) == playerBoard || (move | enemyBoard) == enemyBoard){ // cant push into piece
-            return moves;
+        if(((move | playerBoard) != playerBoard && (move | enemyBoard) != enemyBoard)){ // cant push into piece
+            moves |= move;
+            move = (int64_t) 1 << (startPos + 16);
+            if((move | playerBoard) != playerBoard && (move | enemyBoard) != enemyBoard){ // can't push into piece
+                moves |= move;
+            }
         }
-        moves |= move;
-        move = (int64_t) 1 << (startPos + 16);
-        if((move | playerBoard) == playerBoard || (move | enemyBoard) == enemyBoard){ // can't push into piece
-            return moves;
-        }
-        moves |= move;
     }else{
         move = (int64_t) 1 << (startPos + 8);
-        if((move | playerBoard) == playerBoard || (move | enemyBoard) == enemyBoard){ // cant push into piece
-            return moves;
+        if((move | playerBoard) != playerBoard && (move | enemyBoard) != enemyBoard){ // cant push into piece
+            moves |= move;
         }
-        moves |= move;
     }
     // check two diagonals for capturing:
+    short pos = startPos + 7; // up left
+    if((pos < 64 && ((pos % 8) < (startPos % 8)))){
+        move = (int64_t) 1 << pos;
+        if((move | enemyBoard) == enemyBoard){
+            moves |= move;
+        }
+    }
+
+    pos = startPos + 9;
+    if(pos < 64 && ((pos % 8) > (startPos % 8))){
+        move = (int64_t) 1 << pos;
+        // printBitboard(move);
+        if((move | enemyBoard) == enemyBoard){
+            moves |= move;
+        }
+    }
 
     return moves;
 }

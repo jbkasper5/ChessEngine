@@ -47,5 +47,4 @@ while running:
                 env.deselect_piece(piece_selected)
                 piece_selected = None
             old_piece = piece_selected # change the old piece to be the piece selected
-                
-    pygame.display.update()
+        pygame.display.update()
