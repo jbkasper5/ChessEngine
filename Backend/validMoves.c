@@ -143,7 +143,41 @@ int64_t computeQueenMoves(char* piece, int64_t* boards){
 }
 
 int64_t computeKnightMoves(char* piece, int64_t* boards){
-    return 0;
+    char offset = (*piece == 'w') ? 0 : 6;
+    unsigned char startPos = (*piece == 'w') ? ((*(piece + 3) - 48 - 1) * 8) + (104 - *(piece + 2)) : ((8 - (*(piece + 3) - 48)) * 8) + (-97 + *(piece + 2));
+    int64_t playerBoard = 0;
+    int64_t enemyBoard = 0;
+    for(int i = 0; i < 6; ++i){
+        playerBoard |= boards[i + offset];
+        enemyBoard |= boards[11 - i - (offset)];
+    }
+    int64_t moves = 0;
+    int64_t move = 1;
+
+    // 4 left positions
+    short changes1[] = {17, 10, -6, -15};
+    for(int i = 0; i < 4; ++i){
+        short pos = startPos + changes1[i];
+        if((pos < 64 && pos > 0) && ((pos % 8) > (startPos % 8))){
+            move = (int64_t) 1 << pos;
+            if((move | playerBoard) != playerBoard){
+                moves |= move;
+            }
+        }
+    }
+
+    // 4 right positions
+    int changes2[] = {15, 6, -10, -17};
+    for(int i = 0; i < 4; ++i){
+        short pos = startPos + changes2[i];
+        if((pos < 64 && pos > 0) && ((pos % 8) < (startPos % 8))){
+            move = (int64_t) 1 << pos;
+            if((move | playerBoard) != playerBoard){
+                moves |= move;
+            }
+        }
+    }
+    return moves;
 }
 
 int64_t computeDiagonalMoves(char* piece, int64_t* boards){
