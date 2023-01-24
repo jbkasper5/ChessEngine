@@ -12,8 +12,9 @@ class Engine:
         # args: 
         #   flag | number of pieces on the board | piece selected | board configuration
         start = time.time()
-        # print(f"\'f\' {str(len(board.pieces))} {square.piece.as_str()} {board.as_str()}")
-        proc = subprocess.Popen(['sh', './Backend/compute.sh', 'f', str(len(board.pieces)), square.piece.as_str(), board.as_str()], stdout = subprocess.PIPE)
+        board_str = board.as_str()
+        print(f"\'f\' {board.numPlayer} {board.numEnemy} {square.piece.as_str()} {board_str}")
+        proc = subprocess.Popen(['sh', './Backend/compute.sh', 'f', str(board.numPlayer), str(board.numEnemy), square.piece.as_str(), board_str], stdout = subprocess.PIPE)
         out, err = proc.communicate()
         print(f"Found move in {time.time() - start} seconds.")
         out = str(out)[2:-2]

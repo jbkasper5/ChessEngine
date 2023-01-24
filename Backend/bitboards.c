@@ -1,14 +1,7 @@
 #include "bitboards.h"
 
-typedef struct piece_s{
-    int64_t board;
-    char rank;
-    char file;
-    char moved;
-    char color;
-} piece_t;
-
-extern piece_t* pieces;
+extern piece_t* playerPieces;
+extern piece_t* enemyPieces;
 
 
 void printBitboard(int64_t board){
@@ -23,57 +16,38 @@ void printBitboard(int64_t board){
     printf("\n");
 }
 
-int64_t* getBitboards(char* board){
-    int64_t* boards = (int64_t*)calloc(12, sizeof(int64_t)); // calloc(num_items, size)
-    /*
-        White:
-            P: 0
-            N: 1
-            B: 2
-            R: 3
-            Q: 4
-            K: 5
-        Black:
-            P: 6
-            N: 7
-            B: 8
-            R: 9
-            Q: 10
-            K: 11
-    */
+char getBitboards(char* board, char* piece, char numPlayerPieces, char numEnemyPieces){
+    playerPieces = (piece_t*)calloc(numPlayerPieces, sizeof(piece_t)); // calloc(num_items, size)
+    enemyPieces = (piece_t*)calloc(numEnemyPieces, sizeof(piece_t));
     char* currChar = board;
+    char ppp = 0;
+    char epp = 0;
+    char pieceIndex = 0;
     while(*currChar != 0){
         if(*currChar == 0x5F){ // 0x5f is _ in ascii, 0x30 is 0 in ascii
-            currChar++; // skip underscores and 0s
+            currChar++; // skip underscores
             continue;
-        }else if(*currChar == 0x30){
-            for(int i = 0; i < 12; ++i){
-                boards[i] <<= 1;
-            }
-            currChar++;
         }else{
-            for(int i = 0; i < 12; ++i){
-                boards[i] <<= 1;
+            if(*currChar == *piece){
+                playerPieces[ppp].piece = *(currChar + 1);
+                playerPieces[ppp].file = 'h' - *(currChar + 2);
+                playerPieces[ppp].rank = -'1' + *(currChar + 3);
+                playerPieces[ppp].moved = -'0' + *(currChar + 4);
+                playerPieces[ppp].board = (int64_t) 1 << ((playerPieces[ppp].rank * 8) + playerPieces[ppp].file);
+                if(((*(currChar + 2)) == (*(piece + 2))) && ((*(currChar + 3)) == (*(piece + 3)))){
+                    pieceIndex = ppp;
+                }
+                ppp++;
+            }else{
+                enemyPieces[epp].piece = *(currChar + 1);
+                enemyPieces[epp].rank = 'h' - *(currChar + 2);
+                enemyPieces[epp].file = -'1' + *(currChar + 3);
+                enemyPieces[epp].moved = -'0' + *(currChar + 4);
+                enemyPieces[epp].board = (int64_t) 1 << ((enemyPieces[epp].file * 8) + enemyPieces[epp].rank);
+                epp++;
             }
-            char offset = 0;
-            if(*currChar == 98){ // 98 is b in ascii, piece is black
-                offset = 6;
-            }
-            if(*(currChar + 1) == 'p'){
-                boards[0 + offset]++;
-            }else if(*(currChar + 1) == 'n'){
-                boards[1 + offset]++;
-            }else if(*(currChar + 1) == 'b'){
-                boards[2 + offset]++;
-            }else if(*(currChar + 1) == 'r'){
-                boards[3 + offset]++;
-            }else if(*(currChar + 1) == 'q'){
-                boards[4 + offset]++;
-            }else if(*(currChar + 1) == 'k'){
-                boards[5 + offset]++;
-            }
-            currChar = currChar + 5;
+            currChar += 5;
         }
     }
-    return boards;
+    return pieceIndex;
 }

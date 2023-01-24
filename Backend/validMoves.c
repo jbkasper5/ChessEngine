@@ -1,53 +1,60 @@
 #include "validMoves.h"
 
-typedef struct piece_s{
-    int64_t board;
-    char rank;
-    char file;
-    char moved;
-    char color;
-} piece_t;
+piece_t* playerPieces;
+piece_t* enemyPieces;
+int64_t playerBoard = 0;
+int64_t enemyBoard = 0;
+char numPlayer;
+char numEnemy;
+char playerColor;
+char pieceIndex;
 
-int64_t* boards;
-int64_t enemyMoves = 0;
-short enemySearch = 0;
-char* str_board;
-
-void findValidMoves(short numPieces, char* piece, char* board){
-    str_board = board;
-    boards = getBitboards(board);
-    int64_t moves = getMoves(*piece, *(piece + 1), *(piece + 2), *(piece + 3), *(piece + 4));
-    free(boards);
-    movesToPython(piece, moves);
-}
-
-void getEnemyMoves(char piece, char oldRank, char oldFile, char newRank, char newFile, char enemyColor){
-    enemyMoves = 0;
-    enemySearch = 1;
-    char* currPiece = str_board;
-    char* backup[5];
-    while(*currPiece != 0){
-        if(*(currPiece + 2) == oldRank && *(currPiece + 3) == oldFile){
-            *(currPiece)
-        }
-        if(*currPiece == enemyColor){
-            if(*(currPiece + 5) != 95){
-                currPiece ++;
-                continue;
-            }
-            enemyMoves |= getMoves(*currPiece, *(currPiece + 1), *(currPiece + 2), *(currPiece + 3), *(currPiece + 4));
-        }
-        currPiece++;
+void findValidMoves(char* piece, char* board, short numPlayerPieces, short numEnemyPieces){
+    playerColor = *piece;
+    numPlayer = numPlayerPieces;
+    numEnemy = numEnemyPieces;
+    pieceIndex = getBitboards(board, piece, numPlayerPieces, numEnemyPieces);
+    for(int i = 0; i < numPlayer; ++i){
+        playerBoard |= playerPieces[i].board;
     }
-    enemySearch = 0;
+    for(int i = 0; i < numEnemy; ++i){
+        enemyBoard |= enemyPieces[i].board;
+    }
+    int64_t moves = getMoves(playerPieces[pieceIndex]);
+    // printf("Found moves are: \n");
+    // printBitboard(moves);
+    free(playerPieces);
+    free(enemyPieces);
+    movesToPython(moves);
 }
 
-void movesToPython(char* piece, int64_t moves){
+// void getEnemyMoves(char piece, char oldRank, char oldFile, char newRank, char newFile, char enemyColor){
+//     enemyMoves = 0;
+//     enemySearch = 1;
+//     char* currPiece = str_board;
+//     char* backup[5];
+//     while(*currPiece != 0){
+//         if(*(currPiece + 2) == oldRank && *(currPiece + 3) == oldFile){
+//             *(currPiece)
+//         }
+//         if(*currPiece == enemyColor){
+//             if(*(currPiece + 5) != 95){
+//                 currPiece ++;
+//                 continue;
+//             }
+//             enemyMoves |= getMoves(*currPiece, *(currPiece + 1), *(currPiece + 2), *(currPiece + 3), *(currPiece + 4));
+//         }
+//         currPiece++;
+//     }
+//     enemySearch = 0;
+// }
+
+void movesToPython(int64_t moves){
     char pos = 0;
     int64_t test = (int64_t) 1 << 63;
     while(moves){
         if(moves & 1){
-            if (*piece == 'w'){
+            if (playerColor == 'w'){
                 printf("%c%d,", 104 - (pos % 8), (pos / 8) + 1);
             }else{
                 printf("%c%d,", 97 + (pos % 8), 8 - (pos / 8));
@@ -66,45 +73,36 @@ int64_t inCheck(){
     return 0;
 }
 
-int64_t getMoves(char color, char piece, char rank, char file, char moved){
+int64_t getMoves(piece_t piece){
     int64_t moves;
-    if(piece == 'p'){
-        moves = computePawnMoves(color, rank, file, moved);
-    }else if(piece == 'n'){
-        moves = computeKnightMoves(color, rank, file, moved);
-    }else if(piece == 'b'){
-        moves = computeBishopMoves(color, rank, file, moved);
-    }else if(piece  == 'r'){
-        moves = computeRookMoves(color, rank, file, moved);
-    }else if(piece == 'q'){
-        moves = computeQueenMoves(color, rank, file, moved);
-    }else if(piece == 'k'){
-        moves = computeKingMoves(color, rank, file, moved);
+    if(piece.piece == 'p'){
+        moves = computePawnMoves(piece);
+    }else if(piece.piece == 'n'){
+        moves = computeKnightMoves(piece);
+    }else if(piece.piece == 'b'){
+        moves = computeBishopMoves(piece);
+    }else if(piece.piece == 'r'){
+        moves = computeRookMoves(piece);
+    }else if(piece.piece == 'q'){
+        moves = computeQueenMoves(piece);
+    }else if(piece.piece == 'k'){
+        moves = computeKingMoves(piece);
     }
     return moves;
 }
 
-int64_t computeBishopMoves(char color, char rank, char file, char moved){
-    char offset = (color == 'w') ? 0 : 6;
-    char startPos = (color == 'w') ? ((file - 48 - 1) * 8) + (104 - rank) : ((8 - (file - 48)) * 8) + (-97 + rank);
-    int64_t playerBoard = 0;
-    int64_t enemyBoard = 0;
-    for(int i = 0; i < 6; ++i){
-        playerBoard |= boards[i + offset];
-        enemyBoard |= boards[11 - i - (offset)];
-    }
+int64_t computeBishopMoves(piece_t piece){
+    char startPos = (piece.rank * 8) + piece.file;
     int64_t moves = 0;
     int64_t move = 1;
 
     // up to the left from the piece
     char pos = startPos + 9;
     while(pos < 64 && ((pos % 8) > (startPos % 8))){
-        move = (int64_t) 1 << (enemySearch == 0 ? pos : 63 - pos);
+        move = (int64_t) 1 << pos;
         if((move | playerBoard) == playerBoard){
             break;
         }else if((move | enemyBoard) == enemyBoard){
-            // edit bishop board to reflect new move
-            if(getEnemyMoves())
             moves |= move;
             break;
         }else{
@@ -116,7 +114,7 @@ int64_t computeBishopMoves(char color, char rank, char file, char moved){
     // up to the right from the piece
     pos = startPos + 7;
     while(pos < 64 && ((pos % 8) < (startPos % 8))){
-        move = (int64_t) 1 << (enemySearch == 0 ? pos : 63 - pos);
+        move = (int64_t) 1 << pos;
         if((move | playerBoard) == playerBoard){
             break;
         }else if((move | enemyBoard) == enemyBoard){
@@ -131,7 +129,7 @@ int64_t computeBishopMoves(char color, char rank, char file, char moved){
     // down to the left from the piece
     pos = startPos - 7;
     while(pos >= 0 && ((pos % 8) > (startPos % 8))){
-        move = (int64_t) 1 << (enemySearch == 0 ? pos : 63 - pos);
+        move = (int64_t) 1 << pos;
         if((move | playerBoard) == playerBoard){
             break;
         }else if((move | enemyBoard) == enemyBoard){
@@ -146,7 +144,7 @@ int64_t computeBishopMoves(char color, char rank, char file, char moved){
     // down to the right from the piece
     pos = startPos - 9;
     while(pos >= 0 && ((pos % 8) < (startPos % 8))){
-        move = (int64_t) 1 << (enemySearch == 0 ? pos : 63 - pos);
+        move = (int64_t) 1 << pos;
         if((move | playerBoard) == playerBoard){
             break;
         }else if((move | enemyBoard) == enemyBoard){
@@ -160,22 +158,15 @@ int64_t computeBishopMoves(char color, char rank, char file, char moved){
     return moves;
 }
 
-int64_t computeRookMoves(char color, char rank, char file, char moved){
-    char offset = (color == 'w') ? 0 : 6;
-    char startPos = (color == 'w') ? ((file - 48 - 1) * 8) + (104 - rank) : ((8 - (file - 48)) * 8) + (-97 + rank);
-    int64_t playerBoard = 0;
-    int64_t enemyBoard = 0;
-    for(int i = 0; i < 6; ++i){
-        playerBoard |= boards[i + offset];
-        enemyBoard |= boards[11 - i - (offset)];
-    }
+int64_t computeRookMoves(piece_t piece){
+    char startPos = (piece.rank * 8) + piece.file;
     int64_t moves = 0;
     int64_t move = 1;
 
     // everything above
     char pos = startPos + 8;
     while(pos < 64){
-        move = (int64_t) 1 << (enemySearch == 0 ? pos : 63 - pos);
+        move = (int64_t) 1 << pos;
         if((move | playerBoard) == playerBoard){
             break;
         }else if((move | enemyBoard) == enemyBoard){
@@ -189,8 +180,8 @@ int64_t computeRookMoves(char color, char rank, char file, char moved){
 
     // everything below
     pos = startPos - 8;
-    while(pos > 0){
-        move = (int64_t) 1 << (enemySearch == 0 ? pos : 63 - pos);
+    while(pos >= 0){
+        move = (int64_t) 1 << pos;
         if((move | playerBoard) == playerBoard){
             break;
         }else if((move | enemyBoard) == enemyBoard){
@@ -205,7 +196,7 @@ int64_t computeRookMoves(char color, char rank, char file, char moved){
     // everything right
     pos = startPos + 1;
     while((pos % 8) > (startPos % 8)){
-        move = (int64_t) 1 << (enemySearch == 0 ? pos : 63 - pos);
+        move = (int64_t) 1 << pos;
         if((move | playerBoard) == playerBoard){
             break;
         }else if((move | enemyBoard) == enemyBoard){
@@ -220,7 +211,7 @@ int64_t computeRookMoves(char color, char rank, char file, char moved){
     // everything left
     pos = startPos - 1;
     while((pos % 8) < (startPos % 8) && (pos >= 0)){
-        move = (int64_t) 1 << (enemySearch == 0 ? pos : 63 - pos);
+        move = (int64_t) 1 << pos;
         if((move | playerBoard) == playerBoard){
             break;
         }else if((move | enemyBoard) == enemyBoard){
@@ -234,37 +225,30 @@ int64_t computeRookMoves(char color, char rank, char file, char moved){
     return moves;
 }
 
-int64_t computePawnMoves(char color, char rank, char file, char moved){
-    char offset = (color == 'w') ? 0 : 6;
-    char startPos = (color == 'w') ? ((file - 48 - 1) * 8) + (104 - rank) : ((8 - (file - 48)) * 8) + (-97 + rank);
-    int64_t playerBoard = 0;
-    int64_t enemyBoard = 0;
-    for(int i = 0; i < 6; ++i){
-        playerBoard |= boards[i + offset];
-        enemyBoard |= boards[11 - i - (offset)];
-    }
+int64_t computePawnMoves(piece_t piece){
+    char startPos = (piece.rank * 8) + piece.file;
     int64_t moves = 0;
     int64_t move = 1;
-    if(moved == 48){ // not moved
-        short shiftAmt = (enemySearch == 0 ? (startPos + 8) : 63 - (startPos + 8));
+    if(!piece.moved){ // not moved
+        short shiftAmt = (startPos + 8);
         move = (int64_t) 1 << shiftAmt;
         if(((move | playerBoard) != playerBoard && (move | enemyBoard) != enemyBoard)){ // cant push into piece
             moves |= move;
-            move = (int64_t) 1 << (enemySearch == 0 ? (startPos + 16) : 63 - (startPos + 16));
+            move = (int64_t) 1 << (startPos + 16);
             if((move | playerBoard) != playerBoard && (move | enemyBoard) != enemyBoard){ // can't push into piece
                 moves |= move;
             }
         }
     }else{
-        move = (int64_t) 1 << (enemySearch == 0 ? (startPos + 8) : 63 - (startPos + 8));
+        move = (int64_t) 1 << (startPos + 8);
         if((move | playerBoard) != playerBoard && (move | enemyBoard) != enemyBoard){ // cant push into piece
             moves |= move;
         }
     }
-    // check two diagonals for capturing:
+    // // check two diagonals for capturing:
     short pos = startPos + 7; // up left
     if((pos < 64 && ((pos % 8) < (startPos % 8)))){
-        move = (int64_t) 1 << (enemySearch == 0 ? pos : 63 - pos);
+        move = (int64_t) 1 << pos;
         if((move | enemyBoard) == enemyBoard){
             moves |= move;
         }
@@ -272,35 +256,27 @@ int64_t computePawnMoves(char color, char rank, char file, char moved){
 
     pos = startPos + 9;
     if(pos < 64 && ((pos % 8) > (startPos % 8))){
-        move = (int64_t) 1 << (enemySearch == 0 ? pos : 63 - pos);
+        move = (int64_t) 1 << pos;
         if((move | enemyBoard) == enemyBoard){
             moves |= move;
         }
     }
-
     return moves;
 }
 
-int64_t computeKingMoves(char color, char rank, char file, char moved){
+int64_t computeKingMoves(piece_t piece){
     return 0;
 }
 
-int64_t computeQueenMoves(char color, char rank, char file, char moved){
-    char offset = (color == 'w') ? 0 : 6;
-    char startPos = (color == 'w') ? ((file - 48 - 1) * 8) + (104 - rank) : ((8 - (file - 48)) * 8) + (-97 + rank);
-    int64_t playerBoard = 0;
-    int64_t enemyBoard = 0;
-    for(int i = 0; i < 6; ++i){
-        playerBoard |= boards[i + offset];
-        enemyBoard |= boards[11 - i - (offset)];
-    }
+int64_t computeQueenMoves(piece_t piece){
+    char startPos = (piece.rank * 8) + piece.file;
     int64_t moves = 0;
     int64_t move = 1;
 
     // up to the left from the piece
     char pos = startPos + 9;
     while(pos < 64 && ((pos % 8) > (startPos % 8))){
-        move = (int64_t) 1 << (enemySearch == 0 ? pos : 63 - pos);
+        move = (int64_t) 1 << pos;
         if((move | playerBoard) == playerBoard){
             break;
         }else if((move | enemyBoard) == enemyBoard){
@@ -315,7 +291,7 @@ int64_t computeQueenMoves(char color, char rank, char file, char moved){
     // up to the right from the piece
     pos = startPos + 7;
     while(pos < 64 && ((pos % 8) < (startPos % 8))){
-        move = (int64_t) 1 << (enemySearch == 0 ? pos : 63 - pos);
+        move = (int64_t) 1 << pos;
         if((move | playerBoard) == playerBoard){
             break;
         }else if((move | enemyBoard) == enemyBoard){
@@ -330,7 +306,7 @@ int64_t computeQueenMoves(char color, char rank, char file, char moved){
     // down to the left from the piece
     pos = startPos - 7;
     while(pos >= 0 && ((pos % 8) > (startPos % 8))){
-        move = (int64_t) 1 << (enemySearch == 0 ? pos : 63 - pos);
+        move = (int64_t) 1 << pos;
         if((move | playerBoard) == playerBoard){
             break;
         }else if((move | enemyBoard) == enemyBoard){
@@ -345,7 +321,7 @@ int64_t computeQueenMoves(char color, char rank, char file, char moved){
     // down to the right from the piece
     pos = startPos - 9;
     while(pos >= 0 && ((pos % 8) < (startPos % 8))){
-        move = (int64_t) 1 << (enemySearch == 0 ? pos : 63 - pos);
+        move = (int64_t) 1 << pos;
         if((move | playerBoard) == playerBoard){
             break;
         }else if((move | enemyBoard) == enemyBoard){
@@ -360,7 +336,7 @@ int64_t computeQueenMoves(char color, char rank, char file, char moved){
     // everything above
     pos = startPos + 8;
     while(pos < 64){
-        move = (int64_t) 1 << (enemySearch == 0 ? pos : 63 - pos);
+        move = (int64_t) 1 << pos;
         if((move | playerBoard) == playerBoard){
             break;
         }else if((move | enemyBoard) == enemyBoard){
@@ -374,8 +350,8 @@ int64_t computeQueenMoves(char color, char rank, char file, char moved){
 
     // everything below
     pos = startPos - 8;
-    while(pos > 0){
-        move = (int64_t) 1 << (enemySearch == 0 ? pos : 63 - pos);
+    while(pos >= 0){
+        move = (int64_t) 1 << pos;
         if((move | playerBoard) == playerBoard){
             break;
         }else if((move | enemyBoard) == enemyBoard){
@@ -390,7 +366,7 @@ int64_t computeQueenMoves(char color, char rank, char file, char moved){
     // everything right
     pos = startPos + 1;
     while((pos % 8) > (startPos % 8)){
-        move = (int64_t) 1 << (enemySearch == 0 ? pos : 63 - pos);
+        move = (int64_t) 1 << pos;
         if((move | playerBoard) == playerBoard){
             break;
         }else if((move | enemyBoard) == enemyBoard){
@@ -405,7 +381,7 @@ int64_t computeQueenMoves(char color, char rank, char file, char moved){
     // everything left
     pos = startPos - 1;
     while((pos % 8) < (startPos % 8) && (pos >= 0)){
-        move = (int64_t) 1 << (enemySearch == 0 ? pos : 63 - pos);
+        move = (int64_t) 1 << pos;
         if((move | playerBoard) == playerBoard){
             break;
         }else if((move | enemyBoard) == enemyBoard){
@@ -419,15 +395,8 @@ int64_t computeQueenMoves(char color, char rank, char file, char moved){
     return moves;
 }
 
-int64_t computeKnightMoves(char color, char rank, char file, char moved){
-    char offset = (color == 'w') ? 0 : 6;
-    char startPos = (color == 'w') ? ((file - 48 - 1) * 8) + (104 - rank) : ((8 - (file - 48)) * 8) + (-97 + rank);
-    int64_t playerBoard = 0;
-    int64_t enemyBoard = 0;
-    for(int i = 0; i < 6; ++i){
-        playerBoard |= boards[i + offset];
-        enemyBoard |= boards[11 - i - (offset)];
-    }
+int64_t computeKnightMoves(piece_t piece){
+    char startPos = (piece.rank * 8) + piece.file;
     int64_t moves = 0;
     int64_t move = 1;
 
@@ -436,7 +405,7 @@ int64_t computeKnightMoves(char color, char rank, char file, char moved){
     for(int i = 0; i < 4; ++i){
         short pos = startPos + changes1[i];
         if((pos < 64 && pos > 0) && ((pos % 8) > (startPos % 8))){
-            move = (int64_t) 1 << (enemySearch == 0 ? pos : 63 - pos);
+            move = (int64_t) 1 << pos;
             if((move | playerBoard) != playerBoard){
                 moves |= move;
             }
@@ -448,7 +417,7 @@ int64_t computeKnightMoves(char color, char rank, char file, char moved){
     for(int i = 0; i < 4; ++i){
         short pos = startPos + changes2[i];
         if((pos < 64 && pos > 0) && ((pos % 8) < (startPos % 8))){
-            move = (int64_t) 1 << (enemySearch == 0 ? pos : 63 - pos);
+            move = (int64_t) 1 << pos;
             if((move | playerBoard) != playerBoard){
                 moves |= move;
             }

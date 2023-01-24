@@ -40,7 +40,7 @@ class Board:
             pieces.Pawn(color = "b", set = SET, square = ('e', '7')),
             pieces.Pawn(color = "b", set = SET, square = ('f', '7')),
             pieces.Pawn(color = "b", set = SET, square = ('g', '7')),
-            pieces.Pawn(color = "b", set = SET, square = ('h', '7')),
+            # pieces.Pawn(color = "b", set = SET, square = ('h', '7')),
             pieces.Rook(color = "b", set = SET, square = ('a', '8')),
             pieces.Rook(color = "b", set = SET, square = ('h', '8')),
             pieces.Knight(color = "b", set = SET, square = ('b', '8')),
@@ -50,7 +50,7 @@ class Board:
             pieces.King(color = "b", set = SET, square = ('e', '8')),
             pieces.Queen(color = "b", set = SET, square = ('d', '8'))
         ]
-        
+        self.playerColor = playerColor
         self.assign_pieces()
         
     def assign_pieces(self):
@@ -70,12 +70,16 @@ class Board:
 
     def as_str(self):
         string = ""
+        self.numPlayer = 0
+        self.numEnemy = 0
         for row in range(8):
             for square in range(8):
-                if self.board[row][square].piece == None:
-                    string += "0_"
-                else:
+                if self.board[row][square].piece != None:
                     string += f"{self.board[row][square].piece.as_str()}_"
+                    if(self.board[row][square].piece.color == self.playerColor):
+                        self.numPlayer += 1
+                    else:
+                        self.numEnemy += 1
         return string[:-1]
 
 class Square:
