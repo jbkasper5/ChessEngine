@@ -1,5 +1,16 @@
 #include "bitboards.h"
 
+typedef struct piece_s{
+    int64_t board;
+    char rank;
+    char file;
+    char moved;
+    char color;
+} piece_t;
+
+extern piece_t* pieces;
+
+
 void printBitboard(int64_t board){
     for(int j = 0; j < 8; j++){
         for (int i = 0; i < 8; i++){
