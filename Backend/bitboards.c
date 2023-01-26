@@ -2,6 +2,7 @@
 
 extern piece_t* playerPieces;
 extern piece_t* enemyPieces;
+extern char playerKingIndex;
 
 
 void printBitboard(int64_t board){
@@ -30,6 +31,9 @@ char getBitboards(char* board, char* piece, char numPlayerPieces, char numEnemyP
         }else{
             if(*currChar == *piece){
                 playerPieces[ppp].piece = *(currChar + 1);
+                if(*(currChar + 1) == 'k'){
+                    playerKingIndex = ppp;
+                }
                 playerPieces[ppp].file = 'h' - *(currChar + 2);
                 playerPieces[ppp].rank = -'1' + *(currChar + 3);
                 playerPieces[ppp].moved = -'0' + *(currChar + 4);
@@ -40,10 +44,10 @@ char getBitboards(char* board, char* piece, char numPlayerPieces, char numEnemyP
                 ppp++;
             }else{
                 enemyPieces[epp].piece = *(currChar + 1);
-                enemyPieces[epp].rank = 'h' - *(currChar + 2);
-                enemyPieces[epp].file = -'1' + *(currChar + 3);
+                enemyPieces[epp].file = 'h' - *(currChar + 2);
+                enemyPieces[epp].rank = -'1' + *(currChar + 3);
                 enemyPieces[epp].moved = -'0' + *(currChar + 4);
-                enemyPieces[epp].board = (int64_t) 1 << ((enemyPieces[epp].file * 8) + enemyPieces[epp].rank);
+                enemyPieces[epp].board = (int64_t) 1 << ((enemyPieces[epp].rank * 8) + enemyPieces[epp].file);
                 epp++;
             }
             currChar += 5;
