@@ -4,6 +4,7 @@
 int main(int argc, char** argv){
     char numPlayer = atoi(*(argv + 2));
     char numEnemy = atoi(*(argv + 3));
+    // fread(stdin, ,...)
     if(**(argv + 1) == 'f'){
         char* piece = argv[4];
         char* board = argv[5];

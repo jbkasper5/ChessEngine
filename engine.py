@@ -24,8 +24,9 @@ class Engine:
         # args:
         #   flag | number of pieces on the board | color | board configuration
         start = time.time()
-        proc = subprocess.Popen(['sh', './Backend/compute.sh', str(len(board.pieces)), 'm', str(color), board.as_str()], stdout = subprocess.PIPE)
+        proc = subprocess.Popen(['sh', './Backend/compute.sh', str(len(board.pieces)), 'm', str(color), board.as_str()], stdin = subprocess.PIPE, stdout = subprocess.PIPE)
         out, err = proc.communicate()
+        # proc.stdin.write("")
         print(f"Move made in {time.time() - start} seconds.")
         out = str(out)[2:-3]
         return out
