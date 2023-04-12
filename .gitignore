@@ -1,5 +1,7 @@
-*.o
+bin/
 *.sh
 engine
 dengine
 .DS_Store
+..
+__pycache__
